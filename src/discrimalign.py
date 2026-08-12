@@ -169,6 +169,8 @@ def discrimalign(seqlistA, seqlistB,
     subgradient_l2_trajectory = []
     loglik_expectation = []
     loglik_sd = []
+    theta_trajectory = []
+    
     for iternb in range(max_iter):
         if verbose:
             print('Start of iteration', iternb)
@@ -192,6 +194,21 @@ def discrimalign(seqlistA, seqlistB,
                                             updated_parameters['alpha'])
         new_logL = logit_logL(logit_scores, labels)
         loglik_trajectory.append(new_logL)
+
+        if substitution_mode == 'simple':
+            theta_n = np.array([updated_parameters['match_score'], updated_parameters['mismatch_score'], updated_parameters['open_gap_score'], updated_parameters['extend_gap_score']])
+
+        elif substitution_mode == 'general':
+            theta_n = list(updated_parameters['substitution_matrix'].flatten())
+            theta_n.append(updated_parameters['open_gap_score'])
+            theta_n.append(updated_parameters['extend_gap_score'])
+
+            theta_n = np.array(theta_n)
+
+        ## might need a case for subst mode = symmetric
+
+        theta_trajectory.append(theta_n)
+
         if verbose:
             print("Current alpha:", updated_parameters['alpha'])
             print('Current logL:', new_logL)
@@ -334,6 +351,20 @@ def discrimalign(seqlistA, seqlistB,
 ##    loglik_expectation.append(EL)
 ##    loglik_sd.append(SDL)
     loglik_trajectory.append(new_logL)
+
+    if substitution_mode == 'simple':
+        theta_n = np.array([updated_parameters['match_score'], updated_parameters['mismatch_score'], updated_parameters['open_gap_score'], updated_parameters['extend_gap_score']])
+
+    elif substitution_mode == 'general':
+        theta_n = list(updated_parameters['substitution_matrix'].flatten())
+        theta_n.append(updated_parameters['open_gap_score'])
+        theta_n.append(updated_parameters['extend_gap_score'])
+
+        theta_n = np.array(theta_n)
+
+    theta_trajectory.append(theta_n)
+
+    results['theta_trajectory'] = np.array(theta_trajectory) ## currently a 2d array (rows are theta_n vector)
     results['loglik_trajectory'] = loglik_trajectory
     results['subgradient_l2_trajectory'] = subgradient_l2_trajectory
     results['final_loglik'] = new_logL
