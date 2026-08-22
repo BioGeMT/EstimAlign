@@ -199,7 +199,7 @@ def discrimalign(seqlistA, seqlistB,
             theta_n = np.array([updated_parameters['match_score'], updated_parameters['mismatch_score'], updated_parameters['open_gap_score'], updated_parameters['extend_gap_score']])
 
         elif substitution_mode == 'general':
-            theta_n = list(updated_parameters['substitution_matrix'].flatten())
+            theta_n = list(np.array(updated_parameters['substitution_matrix']).flatten())
             theta_n.append(updated_parameters['open_gap_score'])
             theta_n.append(updated_parameters['extend_gap_score'])
 
@@ -356,7 +356,7 @@ def discrimalign(seqlistA, seqlistB,
         theta_n = np.array([updated_parameters['match_score'], updated_parameters['mismatch_score'], updated_parameters['open_gap_score'], updated_parameters['extend_gap_score']])
 
     elif substitution_mode == 'general':
-        theta_n = list(updated_parameters['substitution_matrix'].flatten())
+        theta_n = list(np.array(updated_parameters['substitution_matrix']).flatten())
         theta_n.append(updated_parameters['open_gap_score'])
         theta_n.append(updated_parameters['extend_gap_score'])
 
